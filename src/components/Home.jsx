@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MessageSquare, Hash } from 'lucide-react';
+import { MessageSquare, Hash, Droplets } from 'lucide-react';
 
 const apps = [
   {
@@ -15,6 +15,13 @@ const apps = [
     icon: Hash,
     color: 'bg-nintendo-blue',
     description: 'Generate random numbers & Pokemon'
+  },
+  {
+    name: 'Hydration Meter',
+    path: '/hydration-meter',
+    icon: Droplets,
+    color: 'bg-sky-500',
+    description: 'Track daily water intake progress'
   }
 ];
 
@@ -30,7 +37,7 @@ const Home = () => {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {apps.map((app) => (
           <Link
             key={app.path}
@@ -43,10 +50,10 @@ const Home = () => {
               <app.icon className="w-8 h-8 text-white" />
             </div>
             
-            <h2 className="text-2xl font-black mb-3 text-text-main group-hover:text-accent-main transition-colors">
+            <h2 className="text-xl font-black mb-3 text-text-main group-hover:text-accent-main transition-colors">
               {app.name}
             </h2>
-            <p className="text-text-muted font-medium">
+            <p className="text-text-muted text-sm font-medium">
               {app.description}
             </p>
           </Link>

@@ -3,32 +3,31 @@
   <rect width="32" height="32" rx="6" fill="#E60012"/>
   
   <!-- Subtle Mario-style corner rivets -->
-  <circle cx="4" cy="4" r="1.2" fill="white" opacity="0.3"/>
-  <circle cx="28" cy="4" r="1.2" fill="white" opacity="0.3"/>
-  <circle cx="4" cy="28" r="1.2" fill="white" opacity="0.3"/>
-  <circle cx="28" cy="28" r="1.2" fill="white" opacity="0.3"/>
+  <circle cx="4" cy="4" r="1" fill="white" opacity="0.3"/>
+  <circle cx="28" cy="4" r="1" fill="white" opacity="0.3"/>
+  <circle cx="4" cy="28" r="1" fill="white" opacity="0.3"/>
+  <circle cx="28" cy="28" r="1" fill="white" opacity="0.3"/>
 
-  <!-- Large Gear (Top-Left) -->
-  <g transform="translate(13, 13)">
-    <circle r="7" fill="white"/>
-    <!-- Gear Teeth -->
-    <rect x="-8.5" y="-1.5" width="17" height="3" fill="white" rx="1"/>
-    <rect x="-1.5" y="-8.5" width="3" height="17" fill="white" rx="1"/>
-    <rect x="-8.5" y="-1.5" width="17" height="3" fill="white" rx="1" transform="rotate(45)"/>
-    <rect x="-1.5" y="-8.5" width="3" height="17" fill="white" rx="1" transform="rotate(45)"/>
-    <!-- Center Hole -->
-    <circle r="3" fill="#E60012"/>
-  </g>
+  <!-- Centered & Scaled Gear Assembly (30% smaller) -->
+  <g transform="translate(16, 16) scale(0.7) translate(-18, -18)">
+    <!-- Large Gear (Top-Left) -->
+    <g transform="translate(13, 13)">
+      <circle r="7" fill="white"/>
+      <rect x="-8.5" y="-1.5" width="17" height="3" fill="white" rx="1"/>
+      <rect x="-1.5" y="-8.5" width="3" height="17" fill="white" rx="1"/>
+      <rect x="-8.5" y="-1.5" width="17" height="3" fill="white" rx="1" transform="rotate(45)"/>
+      <rect x="-1.5" y="-8.5" width="3" height="17" fill="white" rx="1" transform="rotate(45)"/>
+      <circle r="3" fill="#E60012"/>
+    </g>
 
-  <!-- Small Gear (Bottom-Right) - Rotated 22.5 degrees to interlock -->
-  <g transform="translate(23, 23) rotate(22.5)">
-    <circle r="5" fill="white"/>
-    <!-- Gear Teeth -->
-    <rect x="-6.5" y="-1.2" width="13" height="2.4" fill="white" rx="1"/>
-    <rect x="-1.2" y="-6.5" width="2.4" height="13" fill="white" rx="1"/>
-    <rect x="-6.5" y="-1.2" width="13" height="2.4" fill="white" rx="1" transform="rotate(45)"/>
-    <rect x="-1.2" y="-6.5" width="2.4" height="13" fill="white" rx="1" transform="rotate(45)"/>
-    <!-- Center Hole -->
-    <circle r="2" fill="#E60012"/>
+    <!-- Small Gear (Bottom-Right) -->
+    <g transform="translate(23, 23) rotate(22.5)">
+      <circle r="5" fill="white"/>
+      <rect x="-6.5" y="-1.2" width="13" height="2.4" fill="white" rx="1"/>
+      <rect x="-1.2" y="-6.5" width="2.4" height="13" fill="white" rx="1"/>
+      <rect x="-6.5" y="-1.2" width="13" height="2.4" fill="white" rx="1" transform="rotate(45)"/>
+      <rect x="-1.2" y="-6.5" width="2.4" height="13" fill="white" rx="1" transform="rotate(45)"/>
+      <circle r="2" fill="#E60012"/>
+    </g>
   </g>
 </svg>

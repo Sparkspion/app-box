@@ -10,35 +10,43 @@ App Box features a unique **Nintendo Switch / Material Design hybrid** aesthetic
 - **NavDock Navigation:** A fixed bottom navigation "dock" for instantaneous tool switching from any page.
 - **HUD Interface:** Collapsible floating "Heads-Up Display" control panels for tool inputs, keeping the focus on your data output.
 - **Typography:** Modern "Outfit" font paired with retro "Press Start 2P" pixel-style headers.
+- **Offline-First (PWA):** Full service-worker support for asset caching and offline functionality.
 
 ## 🛠️ Included Tools
 
 ### 📱 WhatsApp Auction Analyzer
 A specialized parser for WhatsApp chat exports.
 - **Input:** `.txt` chat export file.
-- **Functionality:** Automatically detects auction starts (base price), bid messages, and auction winners (Congratulations).
-- **Output:** Structured JSON data ready for download or clipboard copying.
-- **HUD Controls:** File upload and action buttons tucked into a collapsible top-right panel.
+- **Functionality:** Automatically detects auction starts, bids, and winners.
+- **Output:** Structured JSON data and interactive session reports.
 
 ### 🎲 Randomizer (with Pokemon Reveal)
 More than just a random number generator.
-- **Functionality:** Generates random numbers within a customizable range (persisted via `localStorage`).
-- **Pokemon Reveal:** If the generated number is a valid National Dex ID (1-1024), a mystery Pokemon card appears.
-- **Experience:** Click the Pokeball to "catch" and reveal the Pokemon with a 3D spinning and card-flip animation.
+- **Functionality:** Generates random numbers (0-9999) with 4-digit padding.
+- **Pokemon Reveal:** If the number matches a Dex ID, a mystery Pokemon card appears with species and type-specific coloring.
+- **Experience:** 3D card-flip reveal with smart offline caching for Pokemon data.
+
+### 💧 Hydration Meter (Hydro-Pulse)
+Track your daily water intake with a gaming aesthetic.
+- **Visuals:** Dynamic liquid-fill animation with wave physics.
+- **Config:** Customizable daily goals and container sizes (e.g., 250ml, 500ml).
+- **Daily Sync:** Automatically resets your progress every 24 hours.
+- **Persistence:** Remembers your goal and intake history locally.
 
 ## 🚀 Tech Stack
 - **Framework:** React 19 + Vite
+- **PWA:** Vite PWA Plugin
 - **Styling:** Tailwind CSS v4
 - **Routing:** React Router v7
 - **Icons:** Lucide React
-- **Typography:** Google Fonts (Outfit, Press Start 2P)
+- **Typography:** Outfit, Press Start 2P
 - **Persistence:** LocalStorage API
 
 ## 📋 Philosophy & Criteria
-- **Simplicity:** No unnecessary bloat; each tool does one thing well.
-- **Atomicity:** Modular components that are easy to maintain or refactor.
-- **Offline-First:** No server-side dependencies for tool functionality.
-- **Operation-as-Code:** Clean, readable, and consistent logic.
+- **Simplicity:** One tool, one job.
+- **Atomicity:** Modular, reusable component architecture.
+- **Offline-First:** No server-side dependencies.
+- **Operation-as-Code:** Consistent and clean implementation.
 
 ---
 *Built as a "Basis" project component.*

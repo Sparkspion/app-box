@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
-import { MessageSquare, Hash, Moon, Sun, LayoutGrid } from 'lucide-react';
+import { MessageSquare, Hash, Moon, Sun, LayoutGrid, Droplets } from 'lucide-react';
 import Home from './components/Home';
 import WhatsAppAuctionAnalyzer from './components/WhatsAppAuctionAnalyzer';
 import RandomNumberGenerator from './components/RandomNumberGenerator';
+import HydrationMeter from './components/HydrationMeter';
 
 const NavDock = ({ theme, toggleTheme }) => {
   const navItems = [
     { path: '/', icon: LayoutGrid, label: 'Menu', color: 'text-nintendo-red' },
     { path: '/whatsapp-analyzer', icon: MessageSquare, label: 'Auction', color: 'text-emerald-500' },
     { path: '/random-generator', icon: Hash, label: 'Random', color: 'text-nintendo-blue' },
+    { path: '/hydration-meter', icon: Droplets, label: 'Hydro', color: 'text-sky-500' },
   ];
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 px-4 w-full max-w-md">
+    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 px-4 w-full max-w-lg">
       <nav className="bg-bg-card/90 backdrop-blur-2xl border-2 border-border-main rounded-[2.5rem] p-2 shadow-2xl flex items-center justify-between relative overflow-hidden">
         <div className="flex items-center gap-1 flex-1 justify-around">
           {navItems.map((item) => (
@@ -67,6 +69,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/whatsapp-analyzer" element={<WhatsAppAuctionAnalyzer />} />
             <Route path="/random-generator" element={<RandomNumberGenerator />} />
+            <Route path="/hydration-meter" element={<HydrationMeter />} />
           </Routes>
         </main>
       </div>
