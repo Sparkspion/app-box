@@ -1,16 +1,44 @@
-# React + Vite
+# 🎮 App Box
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modular collection of lightweight utility tools and proof-of-concepts (POCs) built with a focus on modern UX, performance, and offline-first persistence.
 
-Currently, two official plugins are available:
+## 🕹️ Experience Design
+App Box features a unique **Nintendo Switch / Material Design hybrid** aesthetic. It is built to feel like a modern gaming console's utility suite.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Switch-Material Theme:** High-contrast accents (Nintendo Red & Blue) combined with Material You's rounded geometry and elevated surfaces.
+- **Dual Mode Support:** Fully responsive Light and Dark themes that persist across sessions.
+- **NavDock Navigation:** A fixed bottom navigation "dock" for instantaneous tool switching from any page.
+- **HUD Interface:** Collapsible floating "Heads-Up Display" control panels for tool inputs, keeping the focus on your data output.
+- **Typography:** Modern "Outfit" font paired with retro "Press Start 2P" pixel-style headers.
 
-## React Compiler
+## 🛠️ Included Tools
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 📱 WhatsApp Auction Analyzer
+A specialized parser for WhatsApp chat exports.
+- **Input:** `.txt` chat export file.
+- **Functionality:** Automatically detects auction starts (base price), bid messages, and auction winners (Congratulations).
+- **Output:** Structured JSON data ready for download or clipboard copying.
+- **HUD Controls:** File upload and action buttons tucked into a collapsible top-right panel.
 
-## Expanding the ESLint configuration
+### 🎲 Randomizer (with Pokemon Reveal)
+More than just a random number generator.
+- **Functionality:** Generates random numbers within a customizable range (persisted via `localStorage`).
+- **Pokemon Reveal:** If the generated number is a valid National Dex ID (1-1024), a mystery Pokemon card appears.
+- **Experience:** Click the Pokeball to "catch" and reveal the Pokemon with a 3D spinning and card-flip animation.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🚀 Tech Stack
+- **Framework:** React 19 + Vite
+- **Styling:** Tailwind CSS v4
+- **Routing:** React Router v7
+- **Icons:** Lucide React
+- **Typography:** Google Fonts (Outfit, Press Start 2P)
+- **Persistence:** LocalStorage API
+
+## 📋 Philosophy & Criteria
+- **Simplicity:** No unnecessary bloat; each tool does one thing well.
+- **Atomicity:** Modular components that are easy to maintain or refactor.
+- **Offline-First:** No server-side dependencies for tool functionality.
+- **Operation-as-Code:** Clean, readable, and consistent logic.
+
+---
+*Built as a "Basis" project component.*

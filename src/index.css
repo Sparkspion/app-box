@@ -1,1 +1,70 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", sans-serif;
+  --font-pixel: "Press Start 2P", system-ui;
+
+  --color-nintendo-red: #E60012;
+  --color-nintendo-blue: #00A0E4;
+  
+  /* Semantic tokens that will be switched via .light / .dark classes */
+  --color-bg-app: var(--bg-app);
+  --color-bg-card: var(--bg-card);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-border-main: var(--border-main);
+  --color-accent-main: var(--accent-main);
+}
+
+@layer base {
+  :root {
+    --bg-app: #f2f4f7;
+    --bg-card: #ffffff;
+    --text-main: #1a1a1a;
+    --text-muted: #6b7280;
+    --border-main: #e5e7eb;
+    --accent-main: #E60012;
+    
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .dark {
+    --bg-app: #0f172a;
+    --bg-card: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-main: #334155;
+    --accent-main: #ef4444;
+  }
+
+  body {
+    @apply bg-bg-app text-text-main transition-colors duration-300;
+  }
+}
+
+/* Nintendo Switch Style Button */
+.switch-btn {
+  @apply relative overflow-hidden px-6 py-3 rounded-full font-bold transition-all active:scale-95;
+}
+
+.switch-btn-red {
+  @apply bg-nintendo-red text-white hover:bg-red-700 shadow-[0_4px_0_0_#9a000c] hover:shadow-[0_2px_0_0_#9a000c] hover:translate-y-[2px];
+}
+
+.switch-btn-blue {
+  @apply bg-nintendo-blue text-white hover:bg-blue-600 shadow-[0_4px_0_0_#007cb3] hover:shadow-[0_2px_0_0_#007cb3] hover:translate-y-[2px];
+}
+
+/* Material Card Style */
+.material-card {
+  @apply bg-bg-card border-2 border-border-main rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-all duration-300;
+}
+
+/* Pokemon Style Animated Background */
+.pokeball-bg {
+  mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='48' stroke='black' stroke-width='4' fill='none'/%3E%3Cline x1='2' y1='50' x2='98' y2='50' stroke='black' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='16' fill='black'/%3E%3C/svg%3E");
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
