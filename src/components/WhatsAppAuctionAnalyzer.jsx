@@ -46,6 +46,8 @@ const WhatsAppAuctionAnalyzer = () => {
   const [messages, setMessages] = useState(null);
   const [auctions, setAuctions] = useState([]);
 
+  const isDefault = messages === null;
+
   const parseWhatsAppChat = (text) => {
     const lines = text.split("\n");
     const parsedMessages = [];
@@ -166,7 +168,7 @@ const WhatsAppAuctionAnalyzer = () => {
 
   return (
     <div className="p-4 pb-20 max-w-5xl mx-auto min-h-screen">
-      <HUDContainer title="Files" icon={FileText} color="bg-nintendo-red">
+      <HUDContainer title="Files" icon={FileText} color="bg-nintendo-red" defaultOpen={isDefault}>
         <div className="space-y-6">
           <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border-main rounded-2xl cursor-pointer bg-bg-app hover:bg-bg-app/50 transition-all group">
             <Upload className="w-8 h-8 mb-2 text-nintendo-red group-hover:scale-110 transition-transform" />

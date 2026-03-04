@@ -16,18 +16,31 @@ const usePersistedState = (key, defaultValue) => {
   return [state, setState];
 };
 
+const DEFAULT_GOAL = 2000;
+const DEFAULT_DEPLETION = 20;
+
 const HydrationMeter = () => {
   // Persistence
-  const [goal, setGoal] = usePersistedState('h2o-goal', 2000);
+  const [goal, setGoal] = usePersistedState('h2o-goal', DEFAULT_GOAL);
   const [currentIntake, setCurrentIntake] = usePersistedState('h2o-current', 0);
   const [lastDate, setLastDate] = usePersistedState('h2o-last-date', new Date().toDateString());
   const [lastDrinkTime, setLastDrinkTime] = usePersistedState('h2o-last-time', Date.now());
   const [isNotifyEnabled, setIsNotifyEnabled] = usePersistedState('h2o-notify', false);
-  const [depletionRate, setDepletionRate] = usePersistedState('h2o-depletion-rate', 20); // % per hour
+  const [depletionRate, setDepletionRate] = usePersistedState('h2o-depletion-rate', DEFAULT_DEPLETION); // % per hour
   const [containers, setContainers] = usePersistedState('h2o-containers', [
     { id: 1, name: 'Glass', size: 250 },
     { id: 2, name: 'Bottle', size: 500 },
   ]);
+
+  // Sync logic for persistence setting
+  useEffect(() => {
+    const shouldPersist = JSON.parse(localStorage.getItem('h2o-persist')) ?? true;
+    if (!shouldPersist) {
+      setCurrentIntake(0);
+    }
+  }, []);
+
+  const isDefault = goal === DEFAULT_GOAL && depletionRate === DEFAULT_DEPLETION && !isNotifyEnabled;
 
   // Derived State
   const [vitality, setVitality] = useState(100); 
@@ -82,7 +95,7 @@ const HydrationMeter = () => {
 
   return (
     <div className="p-4 pb-20 max-w-6xl mx-auto min-h-screen">
-      <HUDContainer title="Config" icon={Settings2} color="bg-sky-500">
+      <HUDContainer title="Config" icon={Settings2} color="bg-sky-500" defaultOpen={isDefault}>
         <div className="space-y-6">
           <div className="flex items-center justify-between bg-bg-app p-3 rounded-2xl border-2 border-border-main">
             <div className="flex items-center gap-3">

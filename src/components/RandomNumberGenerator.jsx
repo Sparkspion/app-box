@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Hash, RefreshCw, Sliders } from 'lucide-react';
 import PokemonWidget from './PokemonWidget';
 import HUDContainer from './HUDContainer';
+import CoinFlipWidget from './CoinFlipWidget';
 
 const usePersistedState = (key, defaultValue) => {
   const [state, setState] = useState(() => {
@@ -16,10 +17,23 @@ const usePersistedState = (key, defaultValue) => {
   return [state, setState];
 };
 
+const DEFAULT_MIN = 1;
+const DEFAULT_MAX = 100;
+
 const RandomNumberGenerator = () => {
-  const [min, setMin] = usePersistedState('random-min', 1);
-  const [max, setMax] = usePersistedState('random-max', 100);
-  const [result, setResult] = useState(null);
+  const [min, setMin] = usePersistedState('random-min', DEFAULT_MIN);
+  const [max, setMax] = usePersistedState('random-max', DEFAULT_MAX);
+  const [result, setResult] = usePersistedState('random-last-result', null);
+
+  // Sync logic for persistence setting
+  useEffect(() => {
+    const shouldPersist = JSON.parse(localStorage.getItem('random-persist')) ?? true;
+    if (!shouldPersist) {
+      setResult(null);
+    }
+  }, []);
+
+  const isDefault = min === DEFAULT_MIN && max === DEFAULT_MAX;
 
   const handleInputChange = (setter, value) => {
     const num = Math.max(0, Math.min(9999, Number(value)));
@@ -43,9 +57,10 @@ const RandomNumberGenerator = () => {
         .preserve-3d { transform-style: preserve-3d; }
         .backface-hidden { backface-visibility: hidden; }
         .rotate-y-180 { transform: rotateY(180deg); }
+        .rotate-x-720 { transform: rotateX(720deg); }
       `}</style>
       
-      <HUDContainer title="Controls" icon={Sliders} color="bg-nintendo-blue">
+      <HUDContainer title="Controls" icon={Sliders} color="bg-nintendo-blue" defaultOpen={isDefault}>
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -116,13 +131,9 @@ const RandomNumberGenerator = () => {
             </div>
           </div>
 
-          {/* Placeholder for future widgets */}
-          <div className="material-card border-dashed border-4 border-border-main/50 bg-transparent flex flex-col items-center justify-center p-12 text-center min-h-[400px] opacity-30 hover:opacity-100 transition-opacity group cursor-help">
-             <div className="w-16 h-16 rounded-full border-4 border-dashed border-border-main flex items-center justify-center mb-4 group-hover:rotate-180 transition-transform duration-700">
-                <Sliders className="text-text-muted" size={24} />
-             </div>
-             <p className="text-[10px] font-black uppercase tracking-widest text-text-muted">Empty Slot</p>
-             <p className="text-[8px] font-bold text-text-muted mt-2">Future Widget Data</p>
+          {/* Coin Flip Widget */}
+          <div className="material-card flex flex-col min-h-[400px]">
+             <CoinFlipWidget seed={result} />
           </div>
         </div>
       )}
