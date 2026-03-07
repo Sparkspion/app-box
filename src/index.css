@@ -66,6 +66,15 @@
     border: transparent;
   }
 
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
   .perspective-1000 {
     perspective: 1000px;
   }

@@ -5,14 +5,22 @@ A modular collection of lightweight utility tools and proof-of-concepts (POCs) b
 ## 🕹️ Experience Design
 App Box features a unique **Nintendo Switch / Material Design hybrid** aesthetic. It is built to feel like a modern gaming console's utility suite.
 
+- **Customize Mode:** A dedicated dashboard configuration state allowing users to **Enable/Disable** specific tools and **Reorder** them via native drag-and-drop.
 - **Switch-Material Theme:** High-contrast accents (Nintendo Red & Blue) combined with Material You's rounded geometry and elevated surfaces.
 - **Persistent Header:** Modern sticky header with a **functional Network Status Dot** (pulsing Green for Online, Red for Offline) and integrated Theme Toggle.
 - **Flip-Card Discovery:** Homepage interactive 3D flip cards for quick tool launching and advanced configuration.
-- **Scrollable NavDock:** A fixed bottom navigation "dock" optimized for mobile reach, now featuring a dedicated **System Diagnostics** module.
+- **Scrollable NavDock:** A fixed bottom navigation "dock" optimized for mobile reach, dynamically synchronizing with user-enabled tools and their custom order.
 - **Adaptive HUD:** Collapsible configuration FAB aligned with the NavDock that auto-opens for first-time setup and collapses once synced.
 - **Offline-First (PWA):** Full service-worker support for asset caching and offline functionality.
 
 ## 🛠️ Included Tools
+
+### ✨ MyBit (Atomic Habits)
+A timeline-based habit tracker built on atomic habit principles.
+- **Habit Stacking:** Enforces consistency by linking new habits to existing ones (e.g., "Stack after Wake Up").
+- **Atomic Steps:** Encourages defining the smallest possible action to reduce friction.
+- **Daily Sync:** Progress resets daily to keep the focus on current execution, while maintaining a consistency streak.
+- **Streak Engine:** Gaming-inspired streak counter to reward daily synchronization.
 
 ### 📱 WhatsApp Auction Analyzer
 A specialized parser for WhatsApp chat exports.
@@ -38,7 +46,8 @@ Track your daily water intake with a technical HUD aesthetic.
 Internal toolkit for app health monitoring and data management.
 - **Connectivity:** Real-time Network status and synchronization timestamps.
 - **Readiness Tests:** Automated verification of PWA registration, Cache Storage, Service Worker status, and Notification API support.
-- **Storage Explorer:** Live view of all `localStorage` keys and values with a one-tap "Purge All Data" function.
+- **Prefixed Storage Explorer:** Specialized explorer showing only App Box data (`box-` prefix). Features a formatted view for Arrays/Objects with interactive expand/collapse.
+- **Data Management:** Surgical "Purge App Data" function that clears only application-specific entries without touching other domain storage.
 - **Environment Info:** Hardware and browser diagnostics (OS, Screen Resolution, Browser Agent).
 
 ## 🚀 Tech Stack
@@ -47,7 +56,7 @@ Internal toolkit for app health monitoring and data management.
 - **Styling:** Tailwind CSS v4 (with 3D animations)
 - **Routing:** React Router v7
 - **Icons:** Lucide React
-- **Persistence:** LocalStorage API
+- **Persistence:** LocalStorage API (with `box-` prefixing layer)
 
 ## 📋 Philosophy & Criteria
 - **Simplicity:** One tool, one job.

@@ -11,17 +11,51 @@ import {
   ShieldCheck,
   Smartphone,
   Cloud,
-  Zap
+  Zap,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { notificationService } from '../utils/notificationService';
+import { storage } from '../utils/storage';
+
+const StorageValue = ({ value }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const isObject = typeof value === 'object' && value !== null;
+  const displayValue = isObject ? JSON.stringify(value, null, 2) : String(value);
+
+  if (!isObject) {
+    return <span className="font-mono text-text-muted">{displayValue}</span>;
+  }
+
+  return (
+    <div className="flex flex-col gap-1">
+      <button 
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="flex items-center gap-1 text-[8px] font-black uppercase text-accent-main hover:text-white transition-colors text-left"
+      >
+        {isExpanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
+        {Array.isArray(value) ? `Array(${value.length})` : 'Object'}
+      </button>
+      {isExpanded && (
+        <pre className="bg-bg-app p-2 rounded-lg text-[9px] font-mono text-text-muted overflow-x-auto border border-border-main/50 max-h-40 overflow-y-auto">
+          {displayValue}
+        </pre>
+      )}
+    </div>
+  );
+};
 
 const DebugPage = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [lastSync, setLastSync] = useState(localStorage.getItem('h2o-last-time'));
+  const [lastSync, setLastSync] = useState(storage.get('h2o-last-time', null));
   const [storageItems, setStorageItems] = useState([]);
   const [permissionStatus, setPermissionStatus] = useState(Notification.permission);
   const [pwaStatus, setPwaStatus] = useState('Checking...');
   const [cacheStatus, setCacheStatus] = useState('Checking...');
+
+  const updateStorageList = () => {
+    setStorageItems(storage.getAll());
+  };
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -30,15 +64,6 @@ const DebugPage = () => {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Get all localStorage keys
-    const updateStorageList = () => {
-      const items = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        items.push({ key, value: localStorage.getItem(key) });
-      }
-      setStorageItems(items);
-    };
     updateStorageList();
 
     // Check PWA registration
@@ -78,23 +103,14 @@ const DebugPage = () => {
 
   const simulateSync = () => {
     const now = Date.now().toString();
-    localStorage.setItem('h2o-last-time', now);
+    storage.set('h2o-last-time', now);
     setLastSync(now);
     updateStorageList();
   };
 
-  const updateStorageList = () => {
-    const items = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      items.push({ key, value: localStorage.getItem(key) });
-    }
-    setStorageItems(items);
-  };
-
   const clearStorage = () => {
     if (confirm("Are you sure you want to clear all app data?")) {
-      localStorage.clear();
+      storage.clear();
       setStorageItems([]);
       setLastSync(null);
     }
@@ -255,7 +271,7 @@ const DebugPage = () => {
           </div>
         </div>
 
-        {/* LocalStorage Explorer */}
+        {/* Storage Explorer */}
         <div className="material-card p-6 md:col-span-2">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -268,26 +284,28 @@ const DebugPage = () => {
               onClick={clearStorage}
               className="text-[10px] font-black uppercase text-nintendo-red hover:underline tracking-widest"
             >
-              Purge All Data
+              Purge App Data
             </button>
           </div>
-          <div className="overflow-x-auto">
+          <div className="max-h-80 overflow-y-auto pr-2 scrollbar-thin">
             <table className="w-full text-left">
-              <thead>
+              <thead className="sticky top-0 bg-bg-card z-10">
                 <tr className="border-b border-border-main/50">
-                  <th className="pb-2 text-[8px] font-black text-text-muted uppercase tracking-widest">Key</th>
+                  <th className="pb-2 text-[8px] font-black text-text-muted uppercase tracking-widest w-1/3">Key (box-*)</th>
                   <th className="pb-2 text-[8px] font-black text-text-muted uppercase tracking-widest">Value</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-main/20">
                 {storageItems.length > 0 ? storageItems.map((item, i) => (
                   <tr key={i}>
-                    <td className="py-2 text-[10px] font-mono font-bold text-accent-main">{item.key}</td>
-                    <td className="py-2 text-[10px] font-mono text-text-muted truncate max-w-xs">{item.value}</td>
+                    <td className="py-3 text-[10px] font-mono font-bold text-accent-main align-top">{item.key}</td>
+                    <td className="py-3 text-[10px] align-top">
+                      <StorageValue value={item.value} />
+                    </td>
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan="2" className="py-4 text-center text-[10px] font-black text-text-muted uppercase">No data found</td>
+                    <td colSpan="2" className="py-8 text-center text-[10px] font-black text-text-muted uppercase tracking-widest">No system data found</td>
                   </tr>
                 )}
               </tbody>

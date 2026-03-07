@@ -3,15 +3,13 @@ import { Hash, RefreshCw, Sliders, Zap, Power } from 'lucide-react';
 import PokemonWidget from './PokemonWidget';
 import HUDContainer from './HUDContainer';
 import CoinFlipWidget from './CoinFlipWidget';
+import { storage } from '../utils/storage';
 
 const usePersistedState = (key, defaultValue) => {
-  const [state, setState] = useState(() => {
-    const storedValue = localStorage.getItem(key);
-    return storedValue !== null ? JSON.parse(storedValue) : defaultValue;
-  });
+  const [state, setState] = useState(() => storage.get(key, defaultValue));
 
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(state));
+    storage.set(key, state);
   }, [key, state]);
 
   return [state, setState];
@@ -28,11 +26,12 @@ const RandomNumberGenerator = () => {
 
   // Sync logic for persistence setting
   useEffect(() => {
-    const shouldPersist = JSON.parse(localStorage.getItem('random-persist')) ?? true;
+    const shouldPersist = storage.get('random-persist', true);
     if (!shouldPersist) {
       setResult(null);
     }
   }, [setResult]);
+// ...
 
   const isDefault = min === DEFAULT_MIN && max === DEFAULT_MAX;
 

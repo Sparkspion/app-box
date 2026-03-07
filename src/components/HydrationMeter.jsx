@@ -2,15 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import { Plus, RotateCcw, Settings2, Trash2, GlassWater, Bell, BellOff, Zap, Timer, Activity, Target, ShieldCheck } from 'lucide-react';
 import HUDContainer from './HUDContainer';
 import { notificationService } from '../utils/notificationService';
+import { storage } from '../utils/storage';
 
 const usePersistedState = (key, defaultValue) => {
-  const [state, setState] = useState(() => {
-    const storedValue = localStorage.getItem(key);
-    return storedValue !== null ? JSON.parse(storedValue) : defaultValue;
-  });
+  const [state, setState] = useState(() => storage.get(key, defaultValue));
 
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(state));
+    storage.set(key, state);
   }, [key, state]);
 
   return [state, setState];
