@@ -22,10 +22,11 @@ This document defines specialized agent skills for the App Box project. Call `ac
     - Assign an appropriate Lucide icon and "Nintendo" brand color (`bg-nintendo-red`, `bg-nintendo-blue`, `bg-emerald-500`, etc.).
 4.  **Integration:**
     - Import the component and add a `<Route>` in `src/App.jsx`.
+    - **UI Mandate:** Do NOT modify the `NavDock` styles in `App.jsx` unless explicitly asked. Specifically, ensure the `nav` element does NOT have `overflow-hidden` to maintain horizontal scrolling for tool icons.
 5.  **Validation:**
     - Verify the tool appears on the dashboard.
     - Test "Customize" mode reordering and visibility toggling.
-    - Ensure the NavDock synchronizes correctly.
+    - Ensure the NavDock synchronizes correctly and remains scrollable if tools exceed the viewport width.
 
 ## 🔍 diagnostics-pro
 **Purpose:** Expert guidance for investigating system health, PWA performance, and data layer integrity.
@@ -35,3 +36,22 @@ This document defines specialized agent skills for the App Box project. Call `ac
 2.  Use the "Storage Explorer" to verify data prefixing and serialization.
 3.  Monitor "Sync Status" to ensure persistence logic is firing as expected.
 4.  Suggest enhancements to the `DebugPage` if new technical layers are added.
+
+## 🏷️ tool-namer
+**Purpose:** Guidance for naming new tools or applications with a single-word, descriptive, and creative name.
+
+**Instructions:**
+1.  **Core Mandates:**
+    - **Single Word:** Names must always be a single word.
+    - **Descriptive Intent:** The name should hint at the tool's purpose (e.g., `Collex` for a collector tool).
+    - **Phonetic Clarity:** Names should be easy to pronounce and sound like actual words, even if spelled creatively.
+2.  **Naming Strategies:**
+    - **Portmanteaus:** WhatsApp + Auction -> `Wauction`.
+    - **Phonetic Innovation:** Collector + Action -> `Collex`, Hydration -> `Hydrometer`.
+    - **Truncation & Suffixes:** Converter -> `Convertor`, Habit + Tracker -> `Habitex`.
+    - **Root Extraction:** Water -> `Aqua`, Time -> `Chronos`.
+3.  **Validation:**
+    - Is it a single word?
+    - Is it easy to pronounce?
+    - Does it sound like a real word?
+    - Can you tell what it does?

@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink, useLocation, Link } from 'react-router-dom';
 import { Moon, Sun, LayoutGrid, ChevronLeft, Terminal } from 'lucide-react';
 import Home from './components/Home';
-import WhatsAppAuctionAnalyzer from './components/WhatsAppAuctionAnalyzer';
+import Wauction from './components/Wauction';
+import Proxil from './components/Proxil';
+import Convertor from './components/Convertor';
 import RandomNumberGenerator from './components/RandomNumberGenerator';
-import HydrationMeter from './components/HydrationMeter';
+import Hydrometer from './components/Hydrometer';
 import MyBit from './components/MyBit';
 import DebugPage from './components/DebugPage';
 import { storage } from './utils/storage';
@@ -64,8 +66,8 @@ const NavDock = ({ apps }) => {
 
   return (
     <div className="fixed bottom-8 left-4 right-24 md:left-1/2 md:-translate-x-1/2 md:right-auto z-50 w-auto md:w-full max-w-xl">
-      <nav className="bg-bg-card/90 backdrop-blur-2xl border-2 border-border-main rounded-[2.5rem] p-2 shadow-2xl flex items-center justify-between relative overflow-hidden">
-        <div className="flex items-center gap-1 flex-1 justify-start overflow-x-auto scrollbar-none px-2 pb-1">
+      <nav className="bg-bg-card/90 backdrop-blur-2xl border-2 border-border-main rounded-[2.5rem] p-2 shadow-2xl flex items-center justify-between relative">
+        <div className="flex items-center gap-1 flex-1 justify-start overflow-x-auto scrollbar-thin px-2 pb-2">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
@@ -147,9 +149,11 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<Home apps={apps} setApps={setApps} />} />
-            <Route path="/whatsapp-analyzer" element={<WhatsAppAuctionAnalyzer />} />
+            <Route path="/wauction" element={<Wauction />} />
+            <Route path="/proxil" element={<Proxil />} />
+            <Route path="/convertor" element={<Convertor />} />
             <Route path="/random-generator" element={<RandomNumberGenerator />} />
-            <Route path="/hydration-meter" element={<HydrationMeter />} />
+            <Route path="/hydrometer" element={<Hydrometer />} />
             <Route path="/my-bit" element={<MyBit />} />
             <Route path="/debug" element={<DebugPage />} />
           </Routes>

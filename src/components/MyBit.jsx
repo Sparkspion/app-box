@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
-import { 
-  Plus, 
-  Trash2, 
-  CheckCircle2, 
-  Circle, 
-  Clock, 
-  Link as LinkIcon, 
-  Flame, 
-  Zap, 
+import {
+  Plus,
+  Trash2,
+  CheckCircle2, Clock,
+  Link as LinkIcon,
+  Flame,
+  Zap,
   Target,
   ChevronRight,
   Sparkles,
@@ -15,18 +13,8 @@ import {
   Calendar
 } from 'lucide-react';
 import HUDContainer from './HUDContainer';
-import { storage } from '../utils/storage';
+import usePersistedState from '../hooks/usePersistedState';
 
-const usePersistedState = (key, defaultValue) => {
-  const [state, setState] = useState(() => storage.get(key, defaultValue));
-
-  useEffect(() => {
-    storage.set(key, state);
-  }, [key, state]);
-
-  return [state, setState];
-};
-// ...
 
 const DEFAULT_HABITS = [
   {
@@ -207,14 +195,14 @@ const MyBit = () => {
             />
          </div>
          {/* Background Scanline Visual */}
-         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[length:100%_4px] animate-scanline" 
+         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-size-[100%_4px] animate-scanline" 
               style={{ backgroundImage: 'linear-gradient(rgba(16,185,129,1) 1px, transparent 1px)' }} />
       </div>
 
       {/* Timeline */}
       <div className="relative pl-8 space-y-8">
          {/* Vertical Line */}
-         <div className="absolute left-3 top-2 bottom-2 w-[2px] bg-border-main/50" />
+         <div className="absolute left-3 top-2 bottom-2 w-0.5 bg-border-main/50" />
          
          {habits.length === 0 && (
            <div className="text-center py-12 opacity-30">
@@ -230,11 +218,11 @@ const MyBit = () => {
            return (
              <div key={habit.id} className="relative animate-in fade-in slide-in-from-left-4 duration-500" style={{ animationDelay: `${index * 100}ms` }}>
                 {/* Node */}
-                <div className={`absolute -left-[26px] top-1.5 w-4 h-4 rounded-full border-2 transition-all duration-500 z-10 ${habit.isCompleted ? 'bg-emerald-500 border-emerald-500 scale-110 shadow-lg shadow-emerald-500/30' : 'bg-bg-app border-border-main'}`}>
+                <div className={`absolute -left-6.5 top-1.5 w-4 h-4 rounded-full border-2 transition-all duration-500 z-10 ${habit.isCompleted ? 'bg-emerald-500 border-emerald-500 scale-110 shadow-lg shadow-emerald-500/30' : 'bg-bg-app border-border-main'}`}>
                    {habit.isCompleted && <div className="absolute inset-0 flex items-center justify-center text-white"><CheckCircle2 size={10} strokeWidth={4} /></div>}
                 </div>
 
-                <div className={`material-card p-0 overflow-hidden transition-all duration-500 ${habit.isCompleted ? 'opacity-60 grayscale-[0.5] border-emerald-500/20 bg-emerald-500/[0.02]' : 'hover:border-emerald-500/50'}`}>
+                <div className={`material-card p-0 overflow-hidden transition-all duration-500 ${habit.isCompleted ? 'opacity-60 grayscale-[0.5] border-emerald-500/20 bg-emerald-500/2' : 'hover:border-emerald-500/50'}`}>
                    <div className="flex">
                       {/* Left: Time & Icon */}
                       <div className={`w-20 flex flex-col items-center justify-center border-r border-border-main/50 p-4 ${habit.isCompleted ? 'bg-emerald-500/5' : 'bg-bg-app'}`}>

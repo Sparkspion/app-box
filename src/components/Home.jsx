@@ -19,9 +19,8 @@ const AppCard = ({ app, index, isCustomizing, onToggle, onDragStart, onDragOver,
 
   useEffect(() => {
     const savedSettings = {};
-    if (app.id === 'hydration-meter') {
+    if (app.id === 'hydrometer') {
       savedSettings.goal = storage.get('h2o-goal', 2000);
-      savedSettings.depletion = storage.get('h2o-depletion-rate', 20);
       savedSettings.persist = storage.get('h2o-persist', true);
     } else if (app.id === 'random-generator') {
       savedSettings.min = storage.get('random-min', 1);
@@ -37,8 +36,7 @@ const AppCard = ({ app, index, isCustomizing, onToggle, onDragStart, onDragOver,
     
     const storageKey = {
       goal: 'h2o-goal',
-      depletion: 'h2o-depletion-rate',
-      persist: app.id === 'hydration-meter' ? 'h2o-persist' : 'random-persist',
+      persist: app.id === 'hydrometer' ? 'h2o-persist' : 'random-persist',
       min: 'random-min',
       max: 'random-max'
     }[key];
@@ -127,7 +125,7 @@ const AppCard = ({ app, index, isCustomizing, onToggle, onDragStart, onDragOver,
             </div>
 
             <div className="flex-1 space-y-4 overflow-y-auto pr-1 scrollbar-thin">
-               {app.id === 'hydration-meter' && (
+               {app.id === 'hydrometer' && (
                  <>
                    <div className="space-y-1">
                      <label className="text-[9px] font-black uppercase tracking-widest text-text-muted ml-1">Daily Target (ml)</label>
@@ -135,15 +133,6 @@ const AppCard = ({ app, index, isCustomizing, onToggle, onDragStart, onDragOver,
                        type="number" 
                        value={settings.goal || ''} 
                        onChange={(e) => updateSetting('goal', Number(e.target.value))}
-                       className="w-full bg-bg-app border-2 border-border-main rounded-xl px-4 py-2 text-sm font-bold focus:border-sky-500 outline-none transition-colors"
-                     />
-                   </div>
-                   <div className="space-y-1">
-                     <label className="text-[9px] font-black uppercase tracking-widest text-text-muted ml-1">Vitality Decay (%/hr)</label>
-                     <input 
-                       type="number" 
-                       value={settings.depletion || ''} 
-                       onChange={(e) => updateSetting('depletion', Number(e.target.value))}
                        className="w-full bg-bg-app border-2 border-border-main rounded-xl px-4 py-2 text-sm font-bold focus:border-sky-500 outline-none transition-colors"
                      />
                    </div>
@@ -199,7 +188,7 @@ const AppCard = ({ app, index, isCustomizing, onToggle, onDragStart, onDragOver,
                  </>
                )}
 
-               {!['hydration-meter', 'random-generator'].includes(app.id) && (
+               {!['hydrometer', 'random-generator'].includes(app.id) && (
                  <div className="h-full flex flex-col items-center justify-center text-center px-4">
                     <div className="w-12 h-12 rounded-full bg-bg-app flex items-center justify-center mb-4">
                        <Settings2 className="text-text-muted opacity-30" size={24} />

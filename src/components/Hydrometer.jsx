@@ -1,40 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
-import { Plus, RotateCcw, Settings2, Trash2, GlassWater, Bell, BellOff, Zap, Timer, Activity, Target, ShieldCheck } from 'lucide-react';
+import { useEffect } from 'react';
+import { RotateCcw, Settings2, GlassWater, Target, Plus, Trash2 } from 'lucide-react';
 import HUDContainer from './HUDContainer';
-import { notificationService } from '../utils/notificationService';
-import { storage } from '../utils/storage';
-
-const usePersistedState = (key, defaultValue) => {
-  const [state, setState] = useState(() => storage.get(key, defaultValue));
-
-  useEffect(() => {
-    storage.set(key, state);
-  }, [key, state]);
-
-  return [state, setState];
-};
+import usePersistedState from '../hooks/usePersistedState';
 
 const DEFAULT_GOAL = 2000;
-const DEFAULT_DEPLETION = 10; // % per hour
 
-const HydrationMeter = () => {
+const Hydrometer = () => {
   // Persistence
   const [goal, setGoal] = usePersistedState('h2o-goal', DEFAULT_GOAL);
   const [currentIntake, setCurrentIntake] = usePersistedState('h2o-current', 0);
   const [lastDate, setLastDate] = usePersistedState('h2o-last-date', new Date().toDateString());
-  const [startTime, setStartTime] = usePersistedState('h2o-start-time', Date.now());
   const [lastDrinkTime, setLastDrinkTime] = usePersistedState('h2o-last-time', Date.now());
-  const [isNotifyEnabled, setIsNotifyEnabled] = usePersistedState('h2o-notify', false);
-  const [depletionRate, setDepletionRate] = usePersistedState('h2o-depletion-rate', DEFAULT_DEPLETION); // % per hour
-  const [containers] = usePersistedState('h2o-containers', [
+  const [containers, setContainers] = usePersistedState('h2o-containers', [
     { id: 1, name: 'Glass', size: 250 },
-    { id: 2, name: 'Bottle', size: 500 },
   ]);
-
-  // Derived State
-  const [vitality, setVitality] = useState(100); 
-  const timerRef = useRef(null);
-  const notificationCooldown = useRef(0);
 
   // Daily Reset Logic
   useEffect(() => {
@@ -42,69 +21,39 @@ const HydrationMeter = () => {
     if (lastDate !== today) {
       setCurrentIntake(0);
       setLastDate(today);
-      setStartTime(Date.now());
       setLastDrinkTime(Date.now());
     }
-  }, [lastDate, setCurrentIntake, setLastDate, setStartTime, setLastDrinkTime]);
-
-  // Vitality Calculation Logic
-  useEffect(() => {
-    const updateVitality = () => {
-      const elapsedHours = (Date.now() - startTime) / (1000 * 60 * 60);
-      const progressPercent = (currentIntake / goal) * 100;
-      const decay = elapsedHours * depletionRate;
-      
-      const calculatedVitality = Math.max(0, Math.min(100, 100 + progressPercent - decay));
-      setVitality(Math.round(calculatedVitality));
-
-      if (isNotifyEnabled && calculatedVitality <= 25 && Date.now() > notificationCooldown.current) {
-        notificationService.send("Vitality Low!", {
-          body: `System vitality is at ${Math.round(calculatedVitality)}%. Hydration levels require synchronization.`,
-          tag: 'hydration-nudge'
-        });
-        notificationCooldown.current = Date.now() + (1000 * 60 * 60);
-      }
-    };
-
-    updateVitality();
-    timerRef.current = setInterval(updateVitality, 60000); 
-    return () => clearInterval(timerRef.current);
-  }, [currentIntake, goal, startTime, depletionRate, isNotifyEnabled]);
+  }, [lastDate, setCurrentIntake, setLastDate, setLastDrinkTime]);
 
   const addWater = (amount) => {
     setCurrentIntake(prev => Math.min(goal * 2, prev + amount));
     setLastDrinkTime(Date.now());
   };
 
-  const toggleNotifications = async () => {
-    if (!isNotifyEnabled) {
-      const granted = await notificationService.requestPermission();
-      if (granted) setIsNotifyEnabled(true);
-    } else {
-      setIsNotifyEnabled(false);
+  const removeContainer = (id) => {
+    if (containers.length > 1) {
+      setContainers(containers.filter(c => c.id !== id));
     }
   };
 
+  const addContainer = () => {
+    const newId = Math.max(0, ...containers.map(c => c.id)) + 1;
+    setContainers([...containers, { id: newId, name: 'New Vessel', size: 250 }]);
+  };
+
+  const updateContainer = (id, field, value) => {
+    setContainers(containers.map(c => 
+      c.id === id ? { ...c, [field]: value } : c
+    ));
+  };
+
   const percentage = Math.min(100, Math.round((currentIntake / goal) * 100));
-  const isDefault = goal === DEFAULT_GOAL && depletionRate === DEFAULT_DEPLETION && !isNotifyEnabled;
+  const isDefault = goal === DEFAULT_GOAL;
 
   return (
     <div className="p-4 pb-20 max-w-6xl mx-auto min-h-screen">
-      <HUDContainer title="Config" icon={Settings2} color="bg-sky-500" defaultOpen={isDefault}>
+      <HUDContainer title="Calibration" icon={Settings2} color="bg-sky-500" defaultOpen={isDefault}>
         <div className="space-y-6">
-          <div className="flex items-center justify-between bg-bg-app p-3 rounded-2xl border-2 border-border-main">
-            <div className="flex items-center gap-3">
-              {isNotifyEnabled ? <Bell className="text-sky-500" size={18} /> : <BellOff className="text-text-muted" size={18} />}
-              <span className="text-[10px] font-black uppercase tracking-widest text-text-main">Reminders</span>
-            </div>
-            <button 
-              onClick={toggleNotifications}
-              className={`w-10 h-6 rounded-full transition-colors relative ${isNotifyEnabled ? 'bg-sky-500' : 'bg-border-main'}`}
-            >
-              <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${isNotifyEnabled ? 'left-5' : 'left-1'}`} />
-            </button>
-          </div>
-
           <div className="space-y-2">
             <label className="text-[10px] font-black uppercase tracking-widest text-text-muted px-1">Daily Target (ml)</label>
             <input
@@ -115,37 +64,52 @@ const HydrationMeter = () => {
             />
           </div>
 
-          <div className="space-y-2">
-            <div className="flex justify-between px-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Depletion Rate</label>
-              <span className="text-[10px] font-bold text-sky-500">{depletionRate}%/hr</span>
-            </div>
-            <input
-              type="range"
-              min="5"
-              max="50"
-              step="5"
-              value={depletionRate}
-              onChange={(e) => setDepletionRate(Number(e.target.value))}
-              className="w-full h-2 bg-bg-app rounded-lg appearance-none cursor-pointer accent-sky-500 border border-border-main"
-            />
-            <p className="text-[8px] text-text-muted font-bold uppercase opacity-50 px-1">Adjusts vitality decay speed</p>
+          <div className="space-y-3">
+            <label className="text-[10px] font-black uppercase tracking-widest text-text-muted px-1">Vessel Configuration</label>
+            {containers.map((c, idx) => (
+              <div key={c.id} className="flex gap-2 items-center bg-bg-app border border-border-main p-2 rounded-xl group">
+                <input 
+                  value={c.name}
+                  onChange={(e) => updateContainer(c.id, 'name', e.target.value)}
+                  className="bg-transparent text-[10px] font-bold uppercase flex-1 outline-none"
+                  placeholder="Vessel Name"
+                />
+                <input 
+                  type="number"
+                  value={c.size}
+                  onChange={(e) => updateContainer(c.id, 'size', Math.max(1, Number(e.target.value)))}
+                  className="bg-black/10 w-16 text-[10px] font-bold p-1 rounded text-center outline-none"
+                />
+                <button 
+                  onClick={() => removeContainer(c.id)}
+                  disabled={containers.length <= 1}
+                  className="p-1 text-nintendo-red opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ))}
+            <button 
+              onClick={addContainer}
+              className="w-full py-2 border-2 border-dashed border-border-main rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase hover:border-sky-500 transition-colors"
+            >
+              <Plus size={14} /> Register Vessel
+            </button>
           </div>
           
           <button
-            onClick={() => { if(confirm("Reset progress?")) { setCurrentIntake(0); setStartTime(Date.now()); } }}
+            onClick={() => { if(confirm("Reset progress?")) { setCurrentIntake(0); } }}
             className="switch-btn switch-btn-red w-full py-2 rounded-xl flex items-center justify-center gap-2 uppercase tracking-widest text-[10px]"
           >
-            <RotateCcw size={14} /> System Reset
+            <RotateCcw size={14} /> Manual Reset
           </button>
         </div>
       </HUDContainer>
 
       <header className="mb-12">
-        <h1 className="text-3xl font-pixel text-sky-500 mb-2 uppercase italic tracking-tighter">Hydro-Pulse</h1>
+        <h1 className="text-4xl font-pixel text-sky-500 mb-2 uppercase italic tracking-tighter">Hydrometer</h1>
         <div className="flex items-center gap-4">
-           <p className="text-text-muted font-bold text-xs uppercase tracking-widest opacity-50">Pulse Synchronization Active</p>
-           {isNotifyEnabled && <span className="flex h-2 w-2 rounded-full bg-sky-500 animate-ping" />}
+           <p className="text-text-muted font-bold text-xs uppercase tracking-widest opacity-50">H2O Core Synchronization Active</p>
         </div>
       </header>
 
@@ -182,7 +146,7 @@ const HydrationMeter = () => {
                  <div className="w-48 h-48 border border-sky-500/30 rounded-full flex items-center justify-center animate-pulse">
                     <Target size={40} className="text-sky-500 animate-spin-slow" />
                  </div>
-                 <span className="font-pixel text-[8px] text-sky-500 mt-6 tracking-widest uppercase">Awaiting Uplink</span>
+                 <span className="font-pixel text-[8px] text-sky-500 mt-6 tracking-widest uppercase">Awaiting Transmission</span>
               </div>
             )}
 
@@ -204,23 +168,6 @@ const HydrationMeter = () => {
             <div className="absolute bottom-6 left-6 w-4 h-4 border-b-2 border-l-2 border-sky-500/20" />
             <div className="absolute bottom-6 right-6 w-4 h-4 border-b-2 border-r-2 border-sky-500/20" />
           </div>
-
-          {/* Vitality Bar */}
-          <div className="w-full max-w-[400px] mt-8 bg-bg-card border-2 border-border-main rounded-2xl p-4 shadow-xl relative overflow-hidden">
-             <div className="flex justify-between items-center mb-3 px-1">
-                <div className="flex items-center gap-2">
-                   <Zap size={14} className={vitality < 30 ? 'text-nintendo-red animate-pulse' : 'text-yellow-400'} />
-                   <span className="text-[10px] font-black uppercase tracking-widest text-text-main">System Vitality</span>
-                </div>
-                <span className={`font-pixel text-[8px] ${vitality < 30 ? 'text-nintendo-red' : 'text-text-muted'}`}>{vitality}%</span>
-             </div>
-             <div className="h-3 w-full bg-bg-app rounded-full overflow-hidden p-0.5 border border-border-main">
-                <div 
-                  className={`h-full rounded-full transition-all duration-1000 ${vitality < 30 ? 'bg-nintendo-red shadow-[0_0_10px_rgba(230,0,18,0.5)]' : 'bg-yellow-400'}`}
-                  style={{ width: `${vitality}%` }}
-                />
-             </div>
-          </div>
         </div>
 
         {/* Action Grid */}
@@ -235,8 +182,9 @@ const HydrationMeter = () => {
                 <GlassWater size={32} />
               </div>
               <div className="text-center">
-                <p className="text-[10px] font-black uppercase tracking-widest text-text-muted group-hover:text-sky-500">Inject Sync</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-text-muted group-hover:text-sky-500">Inject Intake</p>
                 <p className="text-3xl font-black text-text-main mt-1">+{c.size}<span className="text-xs ml-1 opacity-50">ml</span></p>
+                <p className="text-[8px] font-black text-text-muted uppercase mt-1 opacity-0 group-hover:opacity-100 transition-opacity">{c.name}</p>
               </div>
             </button>
           ))}
@@ -244,11 +192,10 @@ const HydrationMeter = () => {
           <div className="material-card sm:col-span-2 bg-bg-card/30 flex flex-col justify-center p-8 border-dashed border-border-main/50 relative overflow-hidden group">
              <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-2">
-                   <ShieldCheck size={14} className="text-emerald-500" />
-                   <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Sync Diagnostics</span>
+                   <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Core Diagnostics</span>
                 </div>
-                <div className={`px-3 py-1 rounded-full text-[8px] font-black ${vitality > 50 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-nintendo-red/10 text-nintendo-red'}`}>
-                   {vitality > 50 ? 'SECURE' : 'CRITICAL'}
+                <div className="px-3 py-1 rounded-full text-[8px] font-black bg-emerald-500/10 text-emerald-500">
+                   ACTIVE
                 </div>
              </div>
              <div className="grid grid-cols-2 gap-8">
@@ -287,4 +234,4 @@ const HydrationMeter = () => {
   );
 };
 
-export default HydrationMeter;
+export default Hydrometer;

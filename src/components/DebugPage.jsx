@@ -3,20 +3,19 @@ import {
   Activity, 
   Wifi, 
   WifiOff, 
-  Bell, 
   RefreshCw, 
   Monitor, 
   Database, 
   Cpu,
   ShieldCheck,
   Smartphone,
-  Cloud,
   Zap,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Globe
 } from 'lucide-react';
-import { notificationService } from '../utils/notificationService';
 import { storage } from '../utils/storage';
+import { AUTHORIZED_DOMAINS } from '../utils/network';
 
 const StorageValue = ({ value }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -49,7 +48,6 @@ const DebugPage = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [lastSync, setLastSync] = useState(storage.get('h2o-last-time', null));
   const [storageItems, setStorageItems] = useState([]);
-  const [permissionStatus, setPermissionStatus] = useState(Notification.permission);
   const [pwaStatus, setPwaStatus] = useState('Checking...');
   const [cacheStatus, setCacheStatus] = useState('Checking...');
 
@@ -90,17 +88,6 @@ const DebugPage = () => {
     };
   }, []);
 
-  const triggerNotification = async () => {
-    const granted = await notificationService.requestPermission();
-    setPermissionStatus(Notification.permission);
-    if (granted) {
-      notificationService.send("Debug Notification", {
-        body: "This is a test notification from the Debug Page.",
-        tag: 'debug-notification'
-      });
-    }
-  };
-
   const simulateSync = () => {
     const now = Date.now().toString();
     storage.set('h2o-last-time', now);
@@ -126,12 +113,11 @@ const DebugPage = () => {
   const appTests = [
     { label: 'PWA Registration', value: pwaStatus, status: pwaStatus === 'Registered' ? 'success' : 'warning' },
     { label: 'Cache Storage', value: cacheStatus, status: cacheStatus === 'Active' ? 'success' : 'info' },
-    { label: 'Notification API', value: 'Notification' in window ? 'Supported' : 'Unavailable', status: 'Notification' in window ? 'success' : 'error' },
     { label: 'Service Worker', value: 'serviceWorker' in navigator ? 'Active' : 'Unavailable', status: 'serviceWorker' in navigator ? 'success' : 'error' },
   ];
 
   return (
-    <div className="p-6 max-w-4xl mx-auto min-h-screen pb-32">
+    <div className="p-6 max-w-6xl mx-auto min-h-screen pb-32">
       <header className="mb-12">
         <h1 className="text-4xl font-black text-text-main tracking-tighter uppercase italic flex items-center gap-3">
           <Activity className="text-accent-main animate-pulse" size={32} />
@@ -142,9 +128,9 @@ const DebugPage = () => {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Network Status */}
-        <div className="material-card p-6 flex flex-col justify-between">
+        <div className="material-card p-6 flex flex-col justify-between border-2">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">Connection State</p>
@@ -160,16 +146,16 @@ const DebugPage = () => {
               </div>
             )}
           </div>
-          <div className="mt-6 flex items-center gap-3">
+          <div className="mt-6 flex items-center gap-3 text-text-main">
             <div className={`h-3 w-3 rounded-full ${isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-nintendo-red'}`} />
-            <span className="text-sm font-bold uppercase tracking-wider text-text-main">
+            <span className="text-sm font-bold uppercase tracking-wider">
               {isOnline ? 'System Online' : 'System Offline'}
             </span>
           </div>
         </div>
 
         {/* Sync Status */}
-        <div className="material-card p-6 flex flex-col justify-between">
+        <div className="material-card p-6 flex flex-col justify-between border-2">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">Data Persistence</p>
@@ -195,8 +181,41 @@ const DebugPage = () => {
           </div>
         </div>
 
+        {/* Network Intelligence Card */}
+        <div className="material-card border-emerald-500/20 bg-bg-card/30 flex flex-col relative overflow-hidden lg:row-span-2 border-2">
+          <div className="flex items-center gap-3 mb-6 p-6 pb-0">
+            <div className="p-3 bg-emerald-500/10 rounded-2xl text-emerald-500">
+              <Globe size={24} />
+            </div>
+            <div>
+              <h2 className="text-lg font-black text-text-main tracking-tight uppercase italic leading-none">Network Intel</h2>
+              <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mt-1">Authorized Channels</p>
+            </div>
+          </div>
+
+          <div className="space-y-3 flex-1 overflow-y-auto px-6 scrollbar-thin max-h-[400px] lg:max-h-none">
+            {AUTHORIZED_DOMAINS.map((domain) => (
+              <div key={domain.domain} className="p-3 rounded-xl bg-bg-app border border-border-main/50 group hover:border-emerald-500/30 transition-all">
+                <div className="flex justify-between items-start mb-1">
+                  <span className="text-[10px] font-black text-text-main uppercase tracking-tight">{domain.name}</span>
+                  <span className="text-[7px] font-bold px-1.5 py-0.5 rounded bg-bg-card text-text-muted uppercase border border-border-main group-hover:text-emerald-500 group-hover:border-emerald-500/30">{domain.type}</span>
+                </div>
+                <p className="text-[9px] font-mono text-emerald-500 mb-1 opacity-80 truncate">{domain.domain}</p>
+                <p className="text-[8px] font-medium text-text-muted uppercase leading-tight">{domain.purpose}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-border-main/50 flex items-center justify-between p-6">
+            <div className="flex items-center gap-2">
+              <div className={`h-2 w-2 rounded-full ${isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-nintendo-red'}`} />
+              <span className="text-[8px] font-black text-text-muted uppercase tracking-widest truncate">Uplink infrastructure: {isOnline ? 'Active' : 'Offline'}</span>
+            </div>
+          </div>
+        </div>
+
         {/* App Specific Tests */}
-        <div className="material-card p-6 md:col-span-2">
+        <div className="material-card p-6 md:col-span-2 border-2">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-emerald-500/10 text-emerald-500 rounded-xl">
               <ShieldCheck size={18} />
@@ -220,59 +239,29 @@ const DebugPage = () => {
           </div>
         </div>
 
-        {/* Notification Test */}
-        <div className="material-card p-6 flex flex-col justify-between">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">Push Services</p>
-              <h2 className="text-2xl font-black text-text-main">Notifications</h2>
-            </div>
-            <div className="p-3 bg-nintendo-blue/10 text-nintendo-blue rounded-2xl">
-              <Bell size={24} />
-            </div>
-          </div>
-          <div className="mt-6 space-y-4">
-            <div className="flex items-center justify-between bg-bg-app p-2 rounded-lg border border-border-main/50">
-              <span className="text-[10px] font-black uppercase text-text-muted">Permission Status</span>
-              <span className={`text-[10px] font-black uppercase ${
-                permissionStatus === 'granted' ? 'text-emerald-500' : 
-                permissionStatus === 'denied' ? 'text-nintendo-red' : 'text-yellow-500'
-              }`}>
-                {permissionStatus}
-              </span>
-            </div>
-            <button 
-              onClick={triggerNotification}
-              className="switch-btn switch-btn-blue w-full py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2"
-            >
-              <Cloud size={14} /> Send Test Push
-            </button>
-          </div>
-        </div>
-
         {/* System Info */}
-        <div className="material-card p-6">
+        <div className="material-card p-6 border-2">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-text-main/5 text-text-main rounded-xl">
               <Monitor size={18} />
             </div>
             <h2 className="text-lg font-black text-text-main uppercase tracking-tighter italic">Environment</h2>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 text-text-main">
             {sysInfo.map((info, i) => (
               <div key={i} className="bg-bg-app p-3 rounded-2xl border border-border-main/50">
                 <div className="flex items-center gap-2 mb-1">
                   <info.icon size={12} className="text-text-muted" />
                   <p className="text-[8px] font-black text-text-muted uppercase tracking-widest">{info.label}</p>
                 </div>
-                <p className="text-[10px] font-bold text-text-main truncate">{info.value}</p>
+                <p className="text-[10px] font-bold truncate">{info.value}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Storage Explorer */}
-        <div className="material-card p-6 md:col-span-2">
+        <div className="material-card p-6 md:col-span-2 lg:col-span-3 border-2">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-yellow-500/10 text-yellow-400 rounded-xl">
@@ -289,7 +278,7 @@ const DebugPage = () => {
           </div>
           <div className="max-h-80 overflow-y-auto pr-2 scrollbar-thin">
             <table className="w-full text-left">
-              <thead className="sticky top-0 bg-bg-card z-10">
+              <thead className="sticky top-0 bg-bg-card z-10 text-text-main">
                 <tr className="border-b border-border-main/50">
                   <th className="pb-2 text-[8px] font-black text-text-muted uppercase tracking-widest w-1/3">Key (box-*)</th>
                   <th className="pb-2 text-[8px] font-black text-text-muted uppercase tracking-widest">Value</th>

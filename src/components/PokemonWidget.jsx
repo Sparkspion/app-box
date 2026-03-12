@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AlertCircle, WifiOff } from 'lucide-react';
+import { ENDPOINTS } from '../utils/network';
 
 const TYPE_COLORS = {
   normal: 'bg-[#A8A77A]', fire: 'bg-[#EE8130]', water: 'bg-[#6390F0]', electric: 'bg-[#F7D02C]',
@@ -43,8 +44,8 @@ const PokemonWidget = ({ dexNumber }) => {
     setError(null);
     try {
       const [pRes, sRes] = await Promise.all([
-        fetch(`https://pokeapi.co/api/v2/pokemon/${dexNumber}`),
-        fetch(`https://pokeapi.co/api/v2/pokemon-species/${dexNumber}`)
+        fetch(ENDPOINTS.POKEMON.DETAIL(dexNumber)),
+        fetch(`${ENDPOINTS.POKEMON.BASE}/pokemon-species/${dexNumber}`)
       ]);
       
       if (!pRes.ok) throw new Error("Pokemon not found");

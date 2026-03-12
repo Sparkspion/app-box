@@ -1,68 +1,74 @@
-# 🎮 App Box v1.2.0
+# App Box 📦
 
-A modular collection of lightweight utility tools and proof-of-concepts (POCs) built with a focus on modern UX, performance, and offline-first persistence.
+A modular collection of utility tools designed with a "Nintendo-meets-Material" aesthetic. Built for speed, offline-first reliability, and a clean user experience.
 
-## 🕹️ Experience Design
-App Box features a unique **Nintendo Switch / Material Design hybrid** aesthetic. It is built to feel like a modern gaming console's utility suite.
+## ✨ Core Principles
+- **Simplicity:** One tool per view, no clutter.
+- **Atomicity:** Independent modules that don't depend on each other.
+- **Offline-First:** PWA support for use without an internet connection.
+- **Manual Control:** No background syncing or automated triggers; you are in control.
+- **Network Integrity:** Centralized and authorized communication channels.
 
-- **Customize Mode:** A dedicated dashboard configuration state allowing users to **Enable/Disable** specific tools and **Reorder** them via native drag-and-drop.
-- **Switch-Material Theme:** High-contrast accents (Nintendo Red & Blue) combined with Material You's rounded geometry and elevated surfaces.
-- **Persistent Header:** Modern sticky header with a **functional Network Status Dot** (pulsing Green for Online, Red for Offline) and integrated Theme Toggle.
-- **Flip-Card Discovery:** Homepage interactive 3D flip cards for quick tool launching and advanced configuration.
-- **Scrollable NavDock:** A fixed bottom navigation "dock" optimized for mobile reach, dynamically synchronizing with user-enabled tools and their custom order.
-- **Adaptive HUD:** Collapsible configuration FAB aligned with the NavDock that auto-opens for first-time setup and collapses once synced.
-- **Offline-First (PWA):** Full service-worker support for asset caching and offline functionality.
+## 🛠 Modules
 
-## 🛠️ Included Tools
+### 🤖 Proxil
+Advanced collector reconnaissance tool for tracking the next grail using real-time market intelligence.
+- **Dual-Source Engine:** Native support for Shopify (`/products.json`) and Generic scrapers.
+- **New Intel Tracking:** Persistent "seen" state with highlighting for new arrivals.
+- **Watchlist:** Save your grails to a persistent list for quick monitoring.
+- **Market Filters:** Sort by price (INR) or newest additions.
 
-### ✨ MyBit (Atomic Habits)
-A timeline-based habit tracker built on atomic habit principles.
-- **Habit Stacking:** Enforces consistency by linking new habits to existing ones (e.g., "Stack after Wake Up").
-- **Atomic Steps:** Encourages defining the smallest possible action to reduce friction.
-- **Daily Sync:** Progress resets daily to keep the focus on current execution, while maintaining a consistency streak.
-- **Streak Engine:** Gaming-inspired streak counter to reward daily synchronization.
+### 💧 Hydrometer
+A manual water intake tracker with liquid physics and custom vessel configuration.
+- **Vessel Registry:** Configure custom glass/bottle sizes for one-tap injection.
+- **Interactive UI:** Dynamic wave animations based on current intake.
+- **Sync Diagnostics:** Track last intake time and remaining target.
 
-### 📱 WhatsApp Auction Analyzer
-A specialized parser for WhatsApp chat exports.
-- **Input:** `.txt` chat export file.
-- **Functionality:** Automatically detects auction starts, bids, and winners.
-- **Output:** Structured JSON data and interactive session reports.
+### 📈 Wauction
+Advanced auction intelligence engine for analyzing WhatsApp bid streams.
+- **Bid Extraction:** Automatically identifies bids and winners from raw text logs.
+- **Inventory Lineage:** Tracks item frequency and valuation history.
+- **Spending Ledger:** Aggregated collector stats and spending summaries.
 
-### 🎲 Randomizer (with Pokemon Reveal & Coin Oracle)
-More than just a random number generator.
-- **Entropy Engine:** Generates random numbers (0-9999) with accessible **"Resync"** buttons across all modules and a dedicated mobile FAB.
-- **Pokemon Reveal:** Matches results against Dex IDs to reveal interactive 3D Pokemon cards.
-- **Coin Oracle:** **Realistic 3D Coin Flip** animation with high-velocity rotation. Uses RNG output as a seed for true randomization. Supports "Best Of" series (1, 3, 5).
-- **Settings:** Configurable min/max ranges via the adaptive HUD.
+### 🔄 Convertor
+Molecular and Currency transformation engine.
+- **Currency Mode:** Real-time exchange rates (powered by Frankfurter API).
+- **Molecular Mode:** Convert volume (ml) to mass (g) with substance density presets.
+- **Offline Cache:** One-hour caching strategy for exchange rates.
 
-### 💧 Hydration Meter (Hydro-Pulse)
-Track your daily water intake with a technical HUD aesthetic.
-- **Visuals:** Refined liquid-fill animation with **Scanline Effects**, background **Scan Grids**, and technical corner HUD accents.
-- **System Vitality:** Advanced health logic balancing daily intake against constant time-based decay (`100 + Progress% - Decay`).
-- **Smart Notifications:** Automated alerts triggered when vitality falls below 25% (Critical), featuring a 1-hour cooldown.
-- **HUD Interface:** Clean "Awaiting Uplink" state that hides foreground metrics until the first intake is recorded.
+### 🃏 Randomizer
+A true random number generator with hidden rewards.
+- **Range Control:** Define min and max boundaries.
+- **Pokemon Reveal:** High-roll results reveal entity data from PokéAPI.
+- **Persistent State:** Remembers your last roll between sessions.
 
-### 🛠️ System Diagnostics (Debug)
-Internal toolkit for app health monitoring and data management.
-- **Connectivity:** Real-time Network status and synchronization timestamps.
-- **Readiness Tests:** Automated verification of PWA registration, Cache Storage, Service Worker status, and Notification API support.
-- **Prefixed Storage Explorer:** Specialized explorer showing only App Box data (`box-` prefix). Features a formatted view for Arrays/Objects with interactive expand/collapse.
-- **Data Management:** Surgical "Purge App Data" function that clears only application-specific entries without touching other domain storage.
-- **Environment Info:** Hardware and browser diagnostics (OS, Screen Resolution, Browser Agent).
+### ⚡ MyBit
+Atomic habit tracker for consistent daily wins.
+- **Habit Stacking:** Group related tasks for maximum efficiency.
+- **Consistency Bars:** Visual feedback on your current streak.
+
+## 🌐 Infrastructure
+
+### Network Intelligence
+Centralized oversight of all external communication channels.
+- **AUTHORIZED_DOMAINS:** registry of all allowed external endpoints.
+- **System Diagnostics:** Network Intel module in the Debug Page for real-time visibility.
 
 ## 🚀 Tech Stack
-- **Framework:** React 19 + Vite
-- **PWA:** Vite PWA Plugin
-- **Styling:** Tailwind CSS v4 (with 3D animations)
-- **Routing:** React Router v7
+- **Framework:** React 19
+- **Styling:** Tailwind CSS 4
 - **Icons:** Lucide React
-- **Persistence:** LocalStorage API (with `box-` prefixing layer)
+- **PWA:** Vite PWA Plugin
+- **Data:** Frankfurer API, PokéAPI, AllOrigins Proxy
 
-## 📋 Philosophy & Criteria
-- **Simplicity:** One tool, one job.
-- **Atomicity:** Modular, reusable component architecture.
-- **Offline-First:** No server-side dependencies.
-- **Operation-as-Code:** Consistent and clean implementation.
+## 📦 Installation
+1. Clone the repository.
+2. Run `npm install`.
+3. Start development with `npm run dev`.
+4. Build for production with `npm run build`.
 
----
-*Built as a "Basis" project component.*
+## 🎨 UI/UX Philosophy
+Inspired by modern gaming consoles and material design:
+- **High Contrast:** Bold blacks, crisp whites, and vibrant accents.
+- **Tactile Feedback:** Scale and rotation animations on interactions.
+- **HUD Elements:** Scanlines, corner accents, and pixel-style typography.
