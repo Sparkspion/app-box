@@ -55,3 +55,20 @@ This document defines specialized agent skills for the App Box project. Call `ac
     - Is it easy to pronounce?
     - Does it sound like a real word?
     - Can you tell what it does?
+
+## 🚀 release-prep
+**Purpose:** Efficiently manages the end-to-end release lifecycle, ensuring version integrity, environment readiness, and security compliance.
+
+**Instructions:**
+1.  **Version Synchronization:**
+    - Identify the current version in `package.json`.
+    - Increment the version (Patch, Minor, or Major) based on the scope of changes.
+    - Verify the version is correctly reflected in the UI (e.g., `Home.jsx` system version string).
+2.  **Environment Audit:**
+    - Check `src/utils/network.js` to ensure all `ENDPOINTS` are configured for production (e.g., using the local `/api/proxy` instead of external development proxies).
+    - Review `api/proxy.js` for security "best practices" (CORS, SSRF protection, and timeouts).
+3.  **Integrity Check:**
+    - Run `git status` to ensure no sensitive files or debug logs are being accidentally committed.
+    - If a build script exists, verify it compiles without errors before finalizing.
+4.  **Final Synthesis:**
+    - Summarize the "Reason for Release" (New features, bug fixes, or infrastructure upgrades like the Vercel Proxy).

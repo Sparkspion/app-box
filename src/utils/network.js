@@ -13,8 +13,8 @@ export const ENDPOINTS = {
     DETAIL: (id) => `https://pokeapi.co/api/v2/pokemon/${id}`,
   },
   PROXY: {
-    ALL_ORIGINS: 'https://api.allorigins.win/get',
-    wrap: (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    LOCAL: '/api/proxy',
+    wrap: (url) => `/api/proxy?url=${encodeURIComponent(url)}`,
   }
 };
 
@@ -26,10 +26,10 @@ export const AUTHORIZED_DOMAINS = [
     type: 'Open Source'
   },
   {
-    name: 'AllOrigins Proxy',
-    domain: 'api.allorigins.win',
-    purpose: 'Cypass CORS for reconnaissance scouting',
-    type: 'Utility'
+    name: 'Vercel Proxy',
+    domain: '/api/proxy',
+    purpose: 'Secure server-side reconnaissance tunnel',
+    type: 'Internal'
   },
   {
     name: 'PokéAPI',

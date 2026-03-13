@@ -55,6 +55,31 @@ const DebugPage = () => {
     setStorageItems(storage.getAll());
   };
 
+  const [domainStatus, setDomainStatus] = useState({});
+
+  const checkDomains = async () => {
+    const status = {};
+    for (const d of AUTHORIZED_DOMAINS) {
+      // Don't check wildcard or internal relative paths with full fetch
+      if (d.domain.startsWith('*') || d.domain.startsWith('/')) {
+        status[d.domain] = 'ready';
+        continue;
+      }
+      
+      try {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), 3000);
+        // Use a simple fetch to check if the domain is reachable
+        await fetch(`https://${d.domain}`, { mode: 'no-cors', signal: controller.signal });
+        clearTimeout(id);
+        status[d.domain] = 'online';
+      } catch (e) {
+        status[d.domain] = 'offline';
+      }
+    }
+    setDomainStatus(status);
+  };
+
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
@@ -63,6 +88,7 @@ const DebugPage = () => {
     window.addEventListener('offline', handleOffline);
 
     updateStorageList();
+    checkDomains();
 
     // Check PWA registration
     if ('serviceWorker' in navigator) {

@@ -17,13 +17,14 @@ const Proxil = () => {
   const [sortBy, setSortBy] = useState('newest');
 
   const fetchShopifyProducts = async (site) => {
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`${site.url}/products.json?limit=25`)}`;
+    const proxyUrl = ENDPOINTS.PROXY.wrap(`${site.url}/products.json?limit=25`);
     const response = await fetch(proxyUrl);
     const data = await response.json();
-    if (!data.contents) return [];
     
-    const parsed = JSON.parse(data.contents);
-    return parsed.products.map(p => {
+    // Our new proxy returns the JSON directly if it's application/json
+    const products = data.products || [];
+    
+    return products.map(p => {
       const rawPrice = p.variants?.[0]?.price || '0';
       return {
         id: `sh-${p.id}`,
@@ -39,9 +40,11 @@ const Proxil = () => {
   };
 
   const fetchGenericProducts = async (site) => {
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(site.url)}`;
+    const proxyUrl = ENDPOINTS.PROXY.wrap(site.url);
     const response = await fetch(proxyUrl);
     const data = await response.json();
+    
+    // For generic HTML, our proxy wraps it in .contents
     if (!data.contents) return [];
 
     const parser = new DOMParser();
