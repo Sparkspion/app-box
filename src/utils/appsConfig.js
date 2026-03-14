@@ -1,4 +1,4 @@
-import { MessageSquare, Hash, Droplets, Sparkles, Bot, ArrowLeftRight } from 'lucide-react';
+import { MessageSquare, Hash, Droplets, Sparkles, ArrowLeftRight } from 'lucide-react';
 
 export const ALL_APPS = [
   {
@@ -16,14 +16,6 @@ export const ALL_APPS = [
     icon: MessageSquare,
     color: 'bg-nintendo-red',
     description: 'Advanced auction intelligence engine for analyzing WhatsApp bid streams and cataloging inventory.'
-  },
-  {
-    id: 'proxil',
-    name: 'Proxil',
-    path: '/proxil',
-    icon: Bot,
-    color: 'bg-orange-500',
-    description: 'Advanced collector reconnaissance tool for tracking the next grail using real-time market intelligence.'
   },
   {
     id: 'convertor',

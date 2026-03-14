@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Repeat, Droplets, Scale, Zap, Info, Banknote, Coins, RefreshCw } from 'lucide-react';
 import HUDContainer from './HUDContainer';
+import Gatekeeper from './Gatekeeper';
 import usePersistedState from '../hooks/usePersistedState';
-import { ENDPOINTS } from '../utils/network';
+import { GATEWAY } from '../utils/network';
 
 const Convertor = () => {
   // Molecular State
@@ -41,7 +42,7 @@ const Convertor = () => {
     } else if (molecularInput === 'g' && grams !== '') {
       setMl((parseFloat(grams) / density).toFixed(2));
     }
-  }, [density]);
+  }, [density, grams, ml, molecularInput]);
 
   const handleMlChange = (val) => {
     setMl(val);
@@ -65,8 +66,7 @@ const Convertor = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(ENDPOINTS.CURRENCY.LATEST(baseCurrency));
-      const data = await res.json();
+      const data = await GATEWAY.currency(baseCurrency);
       setRates(data.rates);
       setLastUpdated(now);
     } catch (err) {
@@ -77,8 +77,8 @@ const Convertor = () => {
   };
 
   useEffect(() => {
-    fetchRates();
-  }, [baseCurrency]);
+    if (activeTab === 'currency') fetchRates();
+  }, [baseCurrency, activeTab]);
 
   useEffect(() => {
     if (!rates[targetCurrency]) return;
@@ -87,7 +87,7 @@ const Convertor = () => {
     } else if (currencyInput === 'target' && convertedAmount !== '') {
       setAmount((parseFloat(convertedAmount) / rates[targetCurrency]).toFixed(2));
     }
-  }, [rates, targetCurrency]);
+  }, [rates, targetCurrency, amount, convertedAmount, currencyInput]);
 
   const handleBaseAmountChange = (val) => {
     setAmount(val);
@@ -201,55 +201,102 @@ const Convertor = () => {
 
       <div className="flex flex-col gap-6 items-center animate-in fade-in zoom-in duration-500">
         
-        {/* Top Card */}
-        <div className={`material-card w-full max-w-md relative overflow-hidden group border-2 ${activeTab === 'molecular' ? 'border-sky-500/20' : 'border-emerald-500/20'}`}>
-          <div className={`absolute top-0 left-0 w-1 h-full ${activeTab === 'molecular' ? 'bg-sky-500' : 'bg-emerald-500'}`} />
-          <div className="flex items-center justify-between mb-4">
-            <div className={`flex items-center gap-2 ${activeTab === 'molecular' ? 'text-sky-500' : 'text-emerald-500'}`}>
-              {activeTab === 'molecular' ? <Droplets size={18} /> : <Coins size={18} />}
-              <span className="text-[10px] font-black uppercase tracking-widest">{activeTab === 'molecular' ? 'Volume' : 'Source'}</span>
+        {activeTab === 'molecular' ? (
+          <>
+            {/* Top Card - ML */}
+            <div className="material-card w-full max-w-md relative overflow-hidden group border-2 border-sky-500/20">
+              <div className="absolute top-0 left-0 w-1 h-full bg-sky-500" />
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 text-sky-500">
+                  <Droplets size={18} />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Volume</span>
+                </div>
+                <span className="text-xl font-black text-text-muted opacity-20 group-focus-within:opacity-100 transition-opacity">ML</span>
+              </div>
+              <input 
+                type="number" 
+                value={ml}
+                onChange={(e) => handleMlChange(e.target.value)}
+                placeholder="0.00"
+                className="w-full bg-transparent text-5xl font-black text-text-main outline-none placeholder:opacity-10"
+              />
             </div>
-            <span className="text-xl font-black text-text-muted opacity-20 group-focus-within:opacity-100 transition-opacity">
-              {activeTab === 'molecular' ? 'ML' : baseCurrency}
-            </span>
-          </div>
-          <input 
-            type="number" 
-            value={activeTab === 'molecular' ? ml : amount}
-            onChange={(e) => activeTab === 'molecular' ? handleMlChange(e.target.value) : handleBaseAmountChange(e.target.value)}
-            placeholder="0.00"
-            className="w-full bg-transparent text-5xl font-black text-text-main outline-none placeholder:opacity-10"
-          />
-        </div>
 
-        {/* Swap/Sync Icon */}
-        <button 
-          onClick={activeTab === 'currency' ? swapCurrencies : undefined}
-          className="p-4 bg-bg-card border-2 border-border-main rounded-full shadow-xl relative z-10 -my-8 hover:rotate-180 transition-transform duration-500 active:scale-90"
-        >
-          <Repeat size={24} className="text-emerald-500" />
-        </button>
-
-        {/* Bottom Card */}
-        <div className="material-card w-full max-w-md border-emerald-500/20 relative overflow-hidden group border-2">
-          <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500" />
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2 text-emerald-500">
-              {activeTab === 'molecular' ? <Scale size={18} /> : <Banknote size={18} />}
-              <span className="text-[10px] font-black uppercase tracking-widest">{activeTab === 'molecular' ? 'Mass' : 'Target'}</span>
+            {/* Swap/Sync Icon (Decorative for Molecular) */}
+            <div className="p-4 bg-bg-card border-2 border-border-main rounded-full shadow-xl relative z-10 -my-8">
+              <Repeat size={24} className="text-emerald-500 opacity-20" />
             </div>
-            <span className="text-xl font-black text-text-muted opacity-20 group-focus-within:opacity-100 transition-opacity">
-              {activeTab === 'molecular' ? 'GRAMS' : targetCurrency}
-            </span>
-          </div>
-          <input 
-            type="number" 
-            value={activeTab === 'molecular' ? grams : convertedAmount}
-            onChange={(e) => activeTab === 'molecular' ? handleGramsChange(e.target.value) : handleTargetAmountChange(e.target.value)}
-            placeholder="0.00"
-            className="w-full bg-transparent text-5xl font-black text-text-main outline-none placeholder:opacity-10"
-          />
-        </div>
+
+            {/* Bottom Card - Grams */}
+            <div className="material-card w-full max-w-md border-emerald-500/20 relative overflow-hidden group border-2">
+              <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500" />
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 text-emerald-500">
+                  <Scale size={18} />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Mass</span>
+                </div>
+                <span className="text-xl font-black text-text-muted opacity-20 group-focus-within:opacity-100 transition-opacity">GRAMS</span>
+              </div>
+              <input 
+                type="number" 
+                value={grams}
+                onChange={(e) => handleGramsChange(e.target.value)}
+                placeholder="0.00"
+                className="w-full bg-transparent text-5xl font-black text-text-main outline-none placeholder:opacity-10"
+              />
+            </div>
+          </>
+        ) : (
+          <Gatekeeper title="FX Intelligence">
+            <div className="w-full max-w-md flex flex-col gap-6">
+              {/* Top Card - Source */}
+              <div className="material-card w-full relative overflow-hidden group border-2 border-emerald-500/20">
+                <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500" />
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2 text-emerald-500">
+                    <Coins size={18} />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Source</span>
+                  </div>
+                  <span className="text-xl font-black text-text-muted opacity-20 group-focus-within:opacity-100 transition-opacity">{baseCurrency}</span>
+                </div>
+                <input 
+                  type="number" 
+                  value={amount}
+                  onChange={(e) => handleBaseAmountChange(e.target.value)}
+                  placeholder="0.00"
+                  className="w-full bg-transparent text-5xl font-black text-text-main outline-none placeholder:opacity-10"
+                />
+              </div>
+
+              {/* Swap/Sync Icon */}
+              <button 
+                onClick={swapCurrencies}
+                className="p-4 bg-bg-card border-2 border-border-main rounded-full shadow-xl relative z-10 -my-8 hover:rotate-180 transition-transform duration-500 active:scale-90 mx-auto"
+              >
+                <Repeat size={24} className="text-emerald-500" />
+              </button>
+
+              {/* Bottom Card - Target */}
+              <div className="material-card w-full border-emerald-500/20 relative overflow-hidden group border-2">
+                <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500" />
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2 text-emerald-500">
+                    <Banknote size={18} />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Target</span>
+                  </div>
+                  <span className="text-xl font-black text-text-muted opacity-20 group-focus-within:opacity-100 transition-opacity">{targetCurrency}</span>
+                </div>
+                <input 
+                  type="number" 
+                  value={convertedAmount}
+                  onChange={(e) => handleTargetAmountChange(e.target.value)}
+                  placeholder="0.00"
+                  className="w-full bg-transparent text-5xl font-black text-text-main outline-none placeholder:opacity-10"
+                />
+              </div>
+            </div>
+          </Gatekeeper>
+        )}
 
         {/* Diagnostic Visual */}
         <div className="w-full max-w-md mt-8 grid grid-cols-2 gap-4">

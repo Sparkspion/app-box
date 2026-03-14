@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, NavLink, useLocation, Link } fr
 import { Moon, Sun, LayoutGrid, ChevronLeft, Terminal } from 'lucide-react';
 import Home from './components/Home';
 import Wauction from './components/Wauction';
-import Proxil from './components/Proxil';
 import Convertor from './components/Convertor';
 import RandomNumberGenerator from './components/RandomNumberGenerator';
 import Hydrometer from './components/Hydrometer';
@@ -150,7 +149,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Home apps={apps} setApps={setApps} />} />
             <Route path="/wauction" element={<Wauction />} />
-            <Route path="/proxil" element={<Proxil />} />
             <Route path="/convertor" element={<Convertor />} />
             <Route path="/random-generator" element={<RandomNumberGenerator />} />
             <Route path="/hydrometer" element={<Hydrometer />} />

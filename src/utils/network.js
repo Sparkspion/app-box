@@ -1,46 +1,67 @@
+import { storage } from './storage';
+
 /**
  * Network Intelligence Configuration
- * Centralized registry for all external domains and endpoints used by APP BOX.
+ * Centralized gateway for all external data fetching.
  */
 
-export const ENDPOINTS = {
-  CURRENCY: {
-    BASE: 'https://api.frankfurter.app',
-    LATEST: (base) => `https://api.frankfurter.app/latest?from=${base}`,
+export const GATEWAY = {
+  ENDPOINT: '/api/gateway',
+  
+  /**
+   * Primary fetcher that communicates with the secure serverless gateway.
+   * Prevents execution if admin key is missing.
+   */
+  async fetch(action, params = {}) {
+    const adminKey = storage.get('admin-key', '');
+    
+    // STRICT PREVENTION: No key = No network traffic
+    if (!adminKey) {
+      console.warn(`[Gateway] Blocked ${action} - No Admin Key provided.`);
+      throw new Error('UNAUTHORIZED_CLIENT');
+    }
+
+    const query = new URLSearchParams({ action, ...params }).toString();
+    
+    try {
+      const response = await fetch(`${this.ENDPOINT}?${query}`, {
+        headers: {
+          'x-box-admin-key': adminKey
+        }
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.details || error.error || 'Gateway request failed');
+      }
+      
+      return response.json();
+    } catch (err) {
+      if (err.message === 'UNAUTHORIZED_CLIENT') throw err;
+      throw new Error('UPLINK_FAILURE');
+    }
   },
-  POKEMON: {
-    BASE: 'https://pokeapi.co/api/v2',
-    DETAIL: (id) => `https://pokeapi.co/api/v2/pokemon/${id}`,
-  },
-  PROXY: {
-    LOCAL: '/api/proxy',
-    wrap: (url) => `/api/proxy?url=${encodeURIComponent(url)}`,
-  }
+
+  // High-level Actions (Syntactic Sugar)
+  pokemon: (id) => GATEWAY.fetch('POKEMON_DETAIL', { id }),
+  pokemonFull: (id) => GATEWAY.fetch('POKEMON_FULL', { id }),
+  currency: (base) => GATEWAY.fetch('CURRENCY_LATEST', { base }),
 };
 
-export const AUTHORIZED_DOMAINS = [
+/**
+ * Registry of authorized data providers.
+ */
+export const DATA_PROVIDERS = [
   {
-    name: 'Frankfurter API',
-    domain: 'api.frankfurter.app',
-    purpose: 'Real-time currency exchange rates',
-    type: 'Open Source'
+    id: 'POKEMON',
+    name: 'Entity Registry',
+    purpose: 'Modular data for randomizer engines',
+    type: 'Public'
   },
   {
-    name: 'Vercel Proxy',
-    domain: '/api/proxy',
-    purpose: 'Secure server-side reconnaissance tunnel',
-    type: 'Internal'
-  },
-  {
-    name: 'PokéAPI',
-    domain: 'pokeapi.co',
-    purpose: 'Entity data for randomizer modules',
-    type: 'Community'
-  },
-  {
-    name: 'Shopify Stores',
-    domain: '*.myshopify.com',
-    purpose: 'Direct market intelligence gathering',
-    type: 'Target'
+    id: 'CURRENCY',
+    name: 'FX Intelligence',
+    purpose: 'Real-time molecular conversion offsets',
+    type: 'Public'
   }
 ];

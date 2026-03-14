@@ -6,17 +6,10 @@ A modular collection of utility tools designed with a "Nintendo-meets-Material" 
 - **Simplicity:** One tool per view, no clutter.
 - **Atomicity:** Independent modules that don't depend on each other.
 - **Offline-First:** PWA support for use without an internet connection.
+- **Security:** Zero network traffic for unauthorized users.
 - **Manual Control:** No background syncing or automated triggers; you are in control.
-- **Network Integrity:** Centralized and authorized communication channels.
 
 ## 🛠 Modules
-
-### 🤖 Proxil
-Advanced collector reconnaissance tool for tracking the next grail using real-time market intelligence.
-- **Dual-Source Engine:** Native support for Shopify (`/products.json`) and Generic scrapers.
-- **New Intel Tracking:** Persistent "seen" state with highlighting for new arrivals.
-- **Watchlist:** Save your grails to a persistent list for quick monitoring.
-- **Market Filters:** Sort by price (INR) or newest additions.
 
 ### 💧 Hydrometer
 A manual water intake tracker with liquid physics and custom vessel configuration.
@@ -32,14 +25,14 @@ Advanced auction intelligence engine for analyzing WhatsApp bid streams.
 
 ### 🔄 Convertor
 Molecular and Currency transformation engine.
-- **Currency Mode:** Real-time exchange rates (powered by Frankfurter API).
 - **Molecular Mode:** Convert volume (ml) to mass (g) with substance density presets.
-- **Offline Cache:** One-hour caching strategy for exchange rates.
+- **Currency Mode:** Real-time exchange rates (Super Admin Only).
+- **Offline Cache:** One-hour caching strategy for active exchange rates.
 
 ### 🃏 Randomizer
 A true random number generator with hidden rewards.
 - **Range Control:** Define min and max boundaries.
-- **Pokemon Reveal:** High-roll results reveal entity data from PokéAPI.
+- **Pokemon Reveal:** High-roll results reveal entity data (Super Admin Only).
 - **Persistent State:** Remembers your last roll between sessions.
 
 ### ⚡ MyBit
@@ -47,25 +40,23 @@ Atomic habit tracker for consistent daily wins.
 - **Habit Stacking:** Group related tasks for maximum efficiency.
 - **Consistency Bars:** Visual feedback on your current streak.
 
-## 🌐 Infrastructure
+## 🔒 Security & Infrastructure
 
-### Network Intelligence
-Centralized oversight of all external communication channels.
-- **AUTHORIZED_DOMAINS:** registry of all allowed external endpoints.
-- **System Diagnostics:** Network Intel module in the Debug Page for real-time visibility.
+### Secure API Gateway
+All external communication is routed through a secure serverless gateway (`/api/gateway`). This hides target URLs and API keys from the public frontend.
+
+### Super Admin Uplink
+Certain features that require external data fetching are gated.
+- **Gatekeeper:** Restricted features show a "Locked" UI for public users.
+- **Zero-Traffic:** No network calls are made unless a valid Admin Key is established.
+- **Uplink Interface:** Admins can establish a secure session via the Debug page.
 
 ## 🚀 Tech Stack
 - **Framework:** React 19
 - **Styling:** Tailwind CSS 4
 - **Icons:** Lucide React
 - **PWA:** Vite PWA Plugin
-- **Data:** Frankfurer API, PokéAPI, AllOrigins Proxy
-
-## 📦 Installation
-1. Clone the repository.
-2. Run `npm install`.
-3. Start development with `npm run dev`.
-4. Build for production with `npm run build`.
+- **Environment:** Vercel Serverless Functions
 
 ## 🎨 UI/UX Philosophy
 Inspired by modern gaming consoles and material design:
